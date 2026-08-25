@@ -1,0 +1,227 @@
+---
+import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+
+
+---
+
+<Layout title="index">
+
+<link rel="stylesheet" href="/css/global.css">
+<div class="phone">
+
+    <!-- HEADER -->
+    <header class="app-header">
+        <h1>dIArio</h1>
+        <span>Tu espacio de bienestar</span>
+    </header>
+
+    <!-- ====================================== -->
+    <!-- INICIO (RULETA DE EMOCIONES CIRCULAR) -->
+    <!-- ====================================== -->
+    <section class="screen active" id="home">
+
+        <div class="section-title">
+            <h2>¿Cómo te sientes hoy?</h2>
+            <p>Toca el centro para comenzar a explorar tu emoción.</p>
+        </div>
+
+        <!-- RUEDA DE EMOCIONES SVG CIRCULAR POR NIVELES -->
+        <div class="wheel-wrapper">
+            <svg id="wheel" viewBox="0 0 500 500"></svg>
+            <div class="center-result" id="center-result">
+                <span class="path-text" id="result-path">---</span>
+                <h3 id="final-emotion">---</h3>
+                <button class="reset-btn" onclick="resetWheel()">Reiniciar</button>
+            </div>
+        </div>
+
+        <div class="selected-emotion">
+            <p>Estado registrado:</p>
+            <h3 id="selectedEmotion">Sin registrar</h3>
+        </div>
+
+        <!-- CALENDARIO INTERACTIVO CON RACHAS REALES -->
+        <div class="card">
+            <div class="calendar-header">
+                <button class="nav-btn-cal" id="prev-month">&lt;</button>
+                <h3 id="month-year-display" style="margin:0;">---</h3>
+                <button class="nav-btn-cal" id="next-month">&gt;</button>
+            </div>
+
+            <div class="weekdays">
+                <div>D</div><div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <div class="card">
+            <h3>Resumen</h3>
+
+            <div class="summary">
+                <div>
+                    <strong>Racha Actual</strong>
+                    <span id="streakDisplay">🔥 0 días</span>
+                </div>
+
+                <div>
+                    <strong>Registros</strong>
+                    <span id="totalRegs">0</span>
+                </div>
+
+                <div>
+                    <strong>Último estado</strong>
+                    <span id="lastMood">-</span>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- CHAT CON IA MODERADA -->
+    <!-- ====================================== -->
+    <section class="screen" id="chat">
+
+        <div class="section-title">
+            <h2>Asistente de Bienestar</h2>
+            <p>Un espacio seguro para reflexionar y expresarte.</p>
+        </div>
+
+        <div class="chat-window" id="chatMessages">
+            <div class="message bot">
+                Hola soy un agente de bienestar estoy aqui para ayudarte con cuestiones minimas de salud mental. Estoy aquí para escucharte y ayudarte a procesar cómo te sientes hoy. ¿De qué te gustaría hablar?
+            </div>
+        </div>
+
+        <form class="chat-input-area" id="chatForm">
+            <input type="text" id="userInput" placeholder="Escribe lo que sientes..." autocomplete="off" required />
+            <button type="submit" id="sendBtn">Enviar</button>
+        </form>
+
+        <div class="contact-buttons" style="margin-top: 15px;">
+            <a href="https://wa.me/5210000000000" target="_blank" class="contact-btn whatsapp">WhatsApp</a>
+            <a href="https://t.me/usuario" target="_blank" class="contact-btn telegram">Telegram</a>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+<!-- RESPIRACIÓN -->
+<!-- ====================================== -->
+<section class="screen" id="breathing">
+
+    <div class="section-title">
+        <h2>Respiración guiada</h2>
+        <p>Selecciona una técnica para iniciar.</p>
+    </div>
+
+    <div class="breathing-container">
+        <div class="breathing-circle" id="breathingCircle">
+            <span class="breath-action" id="breathText">Listo</span>
+            <span class="breath-timer" id="breathTimer">--</span>
+        </div>
+    </div>
+
+    <div class="breathing-controls">
+        <button class="breath-btn" data-type="4444">Técnica 4-4-4-4 (Cuadrada)</button>
+        <button class="breath-btn" data-type="478">Técnica 4-7-8 (Relajante)</button>
+        <button class="breath-btn" data-type="55">Técnica 5-5 (Coherencia)</button>
+    </div>
+
+</section>
+
+    <!-- ====================================== -->
+    <!-- DIARIO -->
+    <!-- ====================================== -->
+    <section class="screen" id="journal">
+
+        <div class="section-title">
+            <h2>Diario emocional</h2>
+            <p>Escribe libremente tus pensamientos.</p>
+        </div>
+
+        <textarea id="journalText" placeholder="¿Cómo fue tu día hoy?"></textarea>
+
+        <button id="saveJournal" class="primary-btn">Guardar entrada</button>
+
+        <div class="journal-history">
+            <h3>Entradas recientes</h3>
+            <div id="journalEntries"></div>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- ANALÍTICAS -->
+    <!-- ====================================== -->
+    <section class="screen" id="analytics">
+
+        <div class="section-title">
+            <h2>Analíticas</h2>
+            <p>Seguimiento de tu actividad.</p>
+        </div>
+
+        <div class="card chart-card">
+            <canvas id="emotionChart"></canvas>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Racha Récord</h3>
+                <span id="statBestStreak">0 días</span>
+            </div>
+            <div class="stat-card">
+                <h3>Registros</h3>
+                <span id="statRegistros">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Diarios</h3>
+                <span id="statDiarios">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Respiraciones</h3>
+                <span id="statBreaths">0</span>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ====================================== -->
+    <!-- ACTIVIDADES / MAPA DE BIENESTAR -->
+    <!-- ====================================== -->
+    <section class="screen" id="activities">
+        <div class="section-title">
+            <h2>Ruta del Bienestar</h2>
+            <p>Selecciona una ubicación para conocer sus beneficios.</p>
+        </div>
+
+        <div class="main-container-map">
+            <div id="map"></div>
+            <div class="sidebar-map" id="sidebar-map"></div>
+        </div>
+    </section>
+
+    <!-- ====================================== -->
+    <!-- BOTÓN DE EMERGENCIA -->
+    <!-- ====================================== -->
+    <a href="tel:911" class="emergency-btn" title="Ayuda Inmediata">🆘</a>
+
+    <!-- ====================================== -->
+    <!-- MENÚ NAVEGACIÓN -->
+    <!-- ====================================== -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" data-target="home">🏠<span>Inicio</span></button>
+        <button class="nav-btn" data-target="chat">💬<span>Chat</span></button>
+        <button class="nav-btn" data-target="breathing">🌬️<span>Respirar</span></button>
+        <button class="nav-btn" data-target="journal">📔<span>Diario</span></button>
+        <button class="nav-btn" data-target="analytics">📊<span>Stats</span></button>
+        <button class="nav-btn" data-target="activities">🧭<span>Explorar</span></button>
+    </nav>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+	<script src="/js/app.js" defer></script>
+</Layout>
