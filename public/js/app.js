@@ -404,17 +404,8 @@ const chatForm = document.getElementById('chatForm');
 const userInput = document.getElementById('userInput');
 const sendBtn = document.getElementById('sendBtn');
 
-const conversationHistory = [
-    {
-        role: "system",
-        content: `Eres un asistente virtual de MindCare empático, calmado y moderado especializado en soporte emocional y escucha activa. 
-        Reglas:
-        1. Valida las emociones del usuario de manera cercana.
-        2. Mantén respuestas concisas (máximo 3 oraciones) ideales para una app móvil.
-        3. Haz preguntas abiertas suaves para profundizar en lo que siente.
-        4. No des diagnósticos ni recetas médicas.`
-    }
-];
+// El historial inicia vacío (el backend gestiona las instrucciones del sistema)
+const conversationHistory = [];
 
 chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -430,7 +421,6 @@ chatForm.addEventListener('submit', async (e) => {
     const typingMessage = appendMessage('Pensando...', 'bot');
 
     try {
-        // Petición al endpoint interno de Astro en lugar de OpenAI directamente
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -438,6 +428,7 @@ chatForm.addEventListener('submit', async (e) => {
         });
 
         const data = await response.json();
+        
         if (data.choices && data.choices[0]) {
             const botReply = data.choices[0].message.content;
             typingMessage.textContent = botReply;
