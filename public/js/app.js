@@ -399,7 +399,6 @@ document.getElementById('next-month').onclick = () => {
 // =====================================
 // CHAT CON IA (GPT-4o-mini API)
 // =====================================
-const API_KEY = "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"; // Reemplazar con clave OpenAI activa
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');
 const userInput = document.getElementById('userInput');
@@ -431,18 +430,11 @@ chatForm.addEventListener('submit', async (e) => {
     const typingMessage = appendMessage('Pensando...', 'bot');
 
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        // Petición al endpoint interno de Astro en lugar de OpenAI directamente
+        const response = await fetch('/api/chat', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",
-                messages: conversationHistory,
-                temperature: 0.7,
-                max_tokens: 150
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: conversationHistory })
         });
 
         const data = await response.json();
@@ -454,7 +446,7 @@ chatForm.addEventListener('submit', async (e) => {
             typingMessage.textContent = "Lo siento, tuve un detalle al procesar. ¿Intentamos de nuevo?";
         }
     } catch (error) {
-        typingMessage.textContent = "Estamos para escucharte. (Verifica la conexión o API Key).";
+        typingMessage.textContent = "Estamos para escucharte. (Verifica la conexión del servidor).";
     } finally {
         userInput.disabled = false;
         sendBtn.disabled = false;
