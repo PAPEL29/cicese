@@ -397,7 +397,7 @@ document.getElementById('next-month').onclick = () => {
 };
 
 // =====================================
-// CHAT CON IA (GPT-4o-mini API)
+// CHAT CON IA (Google ia)
 // =====================================
 const chatMessages = document.getElementById('chatMessages');
 const chatForm = document.getElementById('chatForm');
