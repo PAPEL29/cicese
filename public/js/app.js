@@ -421,7 +421,7 @@ chatForm.addEventListener('submit', async (e) => {
     const typingMessage = appendMessage('Pensando...', 'bot');
 
     try {
-        const response = await fetch('/src/pages/api/chat', {
+        const response = await fetch('/pages/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ messages: conversationHistory })
